@@ -43,9 +43,9 @@ class Tree
       nil
     else
       mid = (start + array_end) / 2
-      node = Node.new(array[mid])
-      # binding.pry
+      node = Node.new
       node.left_child = build_tree(array, start, mid - 1)
+      node.data = array[mid] 
       node.right_child = build_tree(array, mid + 1, array_end)
     end
     node
@@ -73,7 +73,40 @@ class Tree
       end
     end
   end
-    
+
+# Recursively search for given value (starting at root). 
+# Once found, check if there are any children
+  # If there is one or no children, send child or nil up the call stack to update
+    # children of parent nodes
+  # If there are two children, search for next highest value (leftmost value of 
+    # right branch), insert 
+
+# Issue: When carrying up a value to replace a node with two children, the other
+# side of the branch is lost (still working on fix)
+  def delete(node = @root, value)
+    p "Searching through Node: #{node.data}."
+    if value < node.data
+      node.left_child = delete(node.left_child, value)
+    elsif value > node.data 
+      node.right_child = delete(node.right_child, value)
+      return node
+    else
+      if node.left_child.nil? || node.right_child.nil?
+        return node.left_child if node.right_child.nil?
+        return node.right_child if node.left_child.nil?
+        return nil
+      else
+        node = node.right_child
+        prev = node
+        until node.left_child == nil
+          prev = node
+          node = node.left_child
+        end
+        prev.left_child = nil
+        return node
+      end
+    end
+  end
 
   #method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)

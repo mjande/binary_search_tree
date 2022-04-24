@@ -1,11 +1,9 @@
 class Node
-  attr_accessor :left_child, :right_child
-  attr_reader :data
+  attr_accessor :left_child, :right_child, :data
   
   include Comparable
 
-  def initialize(value)
-    p "New node: #{value} created."
+  def initialize(value = nil)
     @data = value 
     @left_child = nil
     @right_child = nil
