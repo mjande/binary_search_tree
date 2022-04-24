@@ -51,8 +51,32 @@ class Tree
     node
   end
 
+  def insert(value)
+    node = @root
+    until node.nil?
+      if value < node.data
+        if node.left_child.nil?
+          node.left_child = Node.new(value) 
+          break
+        else
+          node = node.left_child
+        end
+      elsif value > node.data
+        if node.right_child.nil?
+          node.right_child = Node.new(value)
+        else
+          node = node.right_child
+        end
+      else
+        puts "A node with that value already exists in the tree."
+        break
+      end
+    end
+  end
+    
+
+  #method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
-    # binding.pry
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
     pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
