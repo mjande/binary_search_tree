@@ -74,41 +74,60 @@ class Tree
     end
   end
 
-# Recursively search for given value (starting at root). 
-# Once found, check if there are any children
-  # If there is one or no children, send child or nil up the call stack to update
-    # children of parent nodes
+  # Recursively search for given value (starting at root).
+  # Once found, check if there are any children
+    # If there is one or no children, send child or nil up the call stack to update
+      # children of parent nodes
   # If there are two children, search for next highest value (leftmost value of 
     # right branch), insert 
-
-# Issue: When carrying up a value to replace a node with two children, the other
-# side of the branch is lost (still working on fix)
   def delete(node = @root, value)
     p "Searching through Node: #{node.data}."
     if value < node.data
       node.left_child = delete(node.left_child, value)
-    elsif value > node.data 
+    elsif value > node.data
       node.right_child = delete(node.right_child, value)
-      return node
+      node
     else
       if node.left_child.nil? || node.right_child.nil?
         return node.left_child if node.right_child.nil?
         return node.right_child if node.left_child.nil?
-        return nil
+
+        nil
       else
+        # Find left-most descendant of right child (next highest value)
+        original_node = node
         node = node.right_child
         prev = node
-        until node.left_child == nil
+        until node.left_child.nil?
           prev = node
           node = node.left_child
         end
+        # Update children
+        prev.right_child = node.right_child
         prev.left_child = nil
-        return node
+        node.left_child = original_node.left_child
+        unless original_node.right_child == node
+          node.right_child = original_node.right_child
+        end
+        node
       end
     end
   end
 
-  #method copied from TOP Discord
+  def find(value)
+    node = @root
+    until value == node.data
+      if value > node.data
+        node = node.right_child
+      else
+        node = node.left_child
+      end
+    end
+    node
+  end
+  
+
+  # Method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
