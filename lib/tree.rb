@@ -3,10 +3,9 @@ require 'pry-byebug'
 
 class Tree
   attr_reader :root, :array
-  
+
   def initialize(array)
     array = merge_sort(array).uniq
-    @array = array
     @root = build_tree(array, 0, array.length - 1)
   end
 
@@ -20,15 +19,15 @@ class Tree
       array_c = merge_sort(array.slice(((n - 1) / 2 + 1)..-1))
       index_c = 0
       sorted_array = []
-  
+
       until array_b.empty? || array_c.empty?
         if array_b[index_b] < array_c[index_c]
           sorted_array.push(array_b.shift)
-        else 
-          sorted_array.push(array_c.shift) 
+        else
+          sorted_array.push(array_c.shift)
         end
       end
-  
+
       if array_b.empty?
         array_c.each { |el| sorted_array.push(el) }
       elsif array_c.empty?
@@ -37,7 +36,7 @@ class Tree
       sorted_array
     end
   end
-    
+
   def build_tree(array, start, array_end)
     if start > array_end
       nil
@@ -56,7 +55,7 @@ class Tree
     until node.nil?
       if value < node.data
         if node.left_child.nil?
-          node.left_child = Node.new(value) 
+          node.left_child = Node.new(value)
           break
         else
           node = node.left_child
@@ -64,22 +63,17 @@ class Tree
       elsif value > node.data
         if node.right_child.nil?
           node.right_child = Node.new(value)
+          break
         else
           node = node.right_child
         end
       else
-        puts "A node with that value already exists in the tree."
+        puts 'A node with that value already exists in the tree.'
         break
       end
     end
   end
 
-  # Recursively search for given value (starting at root).
-  # Once found, check if there are any children
-    # If there is one or no children, send child or nil up the call stack to update
-      # children of parent nodes
-  # If there are two children, search for next highest value (leftmost value of 
-    # right branch), insert 
   def delete(node = @root, value)
     p "Searching through Node: #{node.data}."
     if value < node.data
@@ -117,17 +111,18 @@ class Tree
   def find(value)
     node = @root
     until value == node.data
-      if value > node.data
-        node = node.right_child
-      else
-        node = node.left_child
-      end
+      node =
+        if value > node.data
+          node.right_child
+        else
+          node.left_child
+        end
     end
     node
   end
 
   def level_order_iter(&block)
-    return @array unless block_given?
+    block = proc { |el| el.data } unless block_given?
     return if @root.nil?
 
     queue = []
@@ -143,22 +138,8 @@ class Tree
     return_array
   end
 
-
-  # Come back to this?
-  def level_order_rec(node = @root, queue = [], &block)
-    return if node.nil?
-
-    queue.push(node) if node == @root
-
-    puts block.call(queue[0])
-    queue.push(node.left_child) unless node.left_child.nil?
-    queue.push(node.right_child) unless node.right_child.nil?
-    level_order_rec(node.left_child, queue, &block)
-    level_order_rec(node.right_child, queue, &block)
-  end
-
   def in_order(node = @root, &block)
-    return @array unless block_given?
+    block = proc { |el| el.data } unless block_given?
 
     return_array = []
     return if node.nil?
@@ -170,7 +151,7 @@ class Tree
   end
 
   def pre_order(node = @root, &block)
-    return @array unless block_given?
+    block = proc { |el| el.data } unless block_given?
     return if node.nil?
 
     return_array = []
@@ -181,7 +162,7 @@ class Tree
   end
 
   def post_order(node = @root, &block)
-    return @array unless block_given?
+    block = proc { |el| el.data } unless block_given?
     return if node.nil?
 
     return_array = []
@@ -229,6 +210,18 @@ class Tree
     end
   end
 
+  def balanced?
+    node = @root
+    left_height = height(node.left_child)
+    right_height = height(node.right_child)
+    (left_height - right_height).abs < 1
+  end
+
+  def rebalance
+    new_array = in_order
+    new_array = merge_sort(new_array).uniq
+    @root = build_tree(new_array, 0, new_array.length - 1)
+  end
 
   # Method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -237,5 +230,3 @@ class Tree
     pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
   end
 end
-
-# [1, 3, 4, 5, 7, 8, 9, 23, 67, 324, 6345]

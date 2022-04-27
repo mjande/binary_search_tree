@@ -1,6 +1,28 @@
 require_relative 'tree'
 
-tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 23, 9, 67, 6345, 324])
+# Driver Script to test
+tree = Tree.new(Array.new(15) { rand(1..100) })
+tree.pretty_print
+p tree.balanced?
+
+p tree.level_order_iter
+p tree.pre_order
+p tree.post_order
+p tree.in_order
+
+# Unbalance the tree
+tree.insert(rand(100..150))
+tree.insert(rand(100..150))
+tree.insert(rand(100..150))
+tree.insert(rand(100..150))
+tree.pretty_print
+p tree.balanced?
+
+tree.rebalance
 tree.pretty_print
 
-p tree.depth(tree.find(23))
+p tree.balanced?
+p tree.level_order_iter
+p tree.pre_order
+p tree.post_order
+p tree.in_order
