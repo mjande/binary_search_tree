@@ -47,7 +47,6 @@ class Tree
   end
 
   def delete(node = @root, value)
-    p "Searching through Node: #{node.data}."
     if value < node.data
       node.left_child = delete(node.left_child, value)
     elsif value > node.data
