@@ -211,6 +211,25 @@ class Tree
     end
   end
 
+  def depth(node)
+    return height(@root) if node == @root
+
+    current_node = @root
+    depth = 0
+    loop do
+      if node.data < current_node.data
+        current_node = current_node.left_child
+        depth += 1
+      elsif node.data > current_node.data
+        current_node = current_node.right_child
+        depth += 1
+      else
+        return depth
+      end
+    end
+  end
+
+
   # Method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
