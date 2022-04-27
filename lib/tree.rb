@@ -5,36 +5,8 @@ class Tree
   attr_reader :root, :array
 
   def initialize(array)
-    array = merge_sort(array).uniq
+    array = array.sort.uniq
     @root = build_tree(array, 0, array.length - 1)
-  end
-
-  def merge_sort(array)
-    n = array.length
-    if n < 2
-      return array
-    else
-      array_b = merge_sort(array.slice(0..(n - 1) / 2))
-      index_b = 0
-      array_c = merge_sort(array.slice(((n - 1) / 2 + 1)..-1))
-      index_c = 0
-      sorted_array = []
-
-      until array_b.empty? || array_c.empty?
-        if array_b[index_b] < array_c[index_c]
-          sorted_array.push(array_b.shift)
-        else
-          sorted_array.push(array_c.shift)
-        end
-      end
-
-      if array_b.empty?
-        array_c.each { |el| sorted_array.push(el) }
-      elsif array_c.empty?
-        array_b.each { |el| sorted_array.push(el) }
-      end
-      sorted_array
-    end
   end
 
   def build_tree(array, start, array_end)
@@ -219,7 +191,7 @@ class Tree
 
   def rebalance
     new_array = in_order
-    new_array = merge_sort(new_array).uniq
+    new_array = new_array.sort.uniq
     @root = build_tree(new_array, 0, new_array.length - 1)
   end
 
