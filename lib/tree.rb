@@ -191,6 +191,26 @@ class Tree
     return_array.flatten
   end
 
+  def height(node)
+    left_path_height =
+      if node.left_child.nil?
+        -1
+      else
+        height(node.left_child)
+      end
+    right_path_height =
+      if node.right_child.nil?
+        -1
+      else
+        height(node.right_child)
+      end
+    if left_path_height > right_path_height
+      left_path_height + 1
+    else
+      right_path_height + 1
+    end
+  end
+
   # Method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
