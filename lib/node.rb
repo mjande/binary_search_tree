@@ -4,8 +4,12 @@ class Node
   include Comparable
 
   def initialize(value = nil)
-    @data = value 
+    @data = value
     @left_child = nil
     @right_child = nil
+  end
+
+  def to_s
+    "Node Data: #{@data}"
   end
 end

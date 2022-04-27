@@ -125,7 +125,71 @@ class Tree
     end
     node
   end
-  
+
+  def level_order_iter(&block)
+    return @array unless block_given?
+    return if @root.nil?
+
+    queue = []
+    return_array = []
+    queue.push(@root)
+    until queue.empty?
+      node = queue[0]
+      return_array.push(block.call(node))
+      queue.push(node.left_child) unless node.left_child.nil?
+      queue.push(node.right_child) unless node.right_child.nil?
+      queue.shift
+    end
+    return_array
+  end
+
+
+  # Come back to this?
+  def level_order_rec(node = @root, queue = [], &block)
+    return if node.nil?
+
+    queue.push(node) if node == @root
+
+    puts block.call(queue[0])
+    queue.push(node.left_child) unless node.left_child.nil?
+    queue.push(node.right_child) unless node.right_child.nil?
+    level_order_rec(node.left_child, queue, &block)
+    level_order_rec(node.right_child, queue, &block)
+  end
+
+  def in_order(node = @root, &block)
+    return @array unless block_given?
+
+    return_array = []
+    return if node.nil?
+
+    return_array << in_order(node.left_child, &block) unless node.left_child.nil?
+    return_array << block.call(node)
+    return_array << in_order(node.right_child, &block) unless node.right_child.nil?
+    return_array.flatten
+  end
+
+  def pre_order(node = @root, &block)
+    return @array unless block_given?
+    return if node.nil?
+
+    return_array = []
+    return_array << block.call(node)
+    return_array << pre_order(node.left_child, &block) unless node.left_child.nil?
+    return_array << pre_order(node.right_child, &block) unless node.right_child.nil?
+    return_array.flatten
+  end
+
+  def post_order(node = @root, &block)
+    return @array unless block_given?
+    return if node.nil?
+
+    return_array = []
+    return_array << post_order(node.left_child, &block) unless node.left_child.nil?
+    return_array << post_order(node.right_child, &block) unless node.right_child.nil?
+    return_array << block.call(node)
+    return_array.flatten
+  end
 
   # Method copied from TOP Discord
   def pretty_print(node = @root, prefix = '', is_left = true)
